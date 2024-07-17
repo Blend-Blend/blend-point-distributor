@@ -9,6 +9,19 @@ export const typeDefs = `#graphql
   # case, the "books" query returns an array of zero or more Books (defined above).
   type Query {
     Headers: [String]
+    Points: [Point]
+    Point(where:PointFilter): Point
+  }
+
+  input PointFilter {
+    address: String
+  }
+
+  type Point {
+    rank: Int
+    address: String
+    supply: Float
+    lend: Float
   }
 
   type Mutation {
