@@ -1,7 +1,8 @@
 import { MyContext } from "../../utils/context";
 import nacl from "tweetnacl";
 
-export const headers = (_parent: any, args: any, _context: MyContext) => {
+export const Headers = (_parent: any, args: any, _context: MyContext) => {
+  console.log("headers", _context.headers);
   return _context.headers;
 };
 

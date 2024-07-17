@@ -1,4 +1,10 @@
 import { GraphQLScalarType } from "graphql";
-import { Hello, StreamUpdate, headers, validate } from "./default";
+import { Hello, StreamUpdate, Headers, validate } from "./default";
 
-export const resolvers = {};
+export const resolvers = {
+  Query: {
+    Headers,
+  },
+  Mutation: {},
+  Subscription: {},
+};

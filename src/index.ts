@@ -79,8 +79,7 @@ const main = async () => {
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: bind_port }, resolve)
   );
-  console.log(`🚀 Server ready at http://localhost:%s/`, bind_port);
-
+  logger.info(`🚀 Server ready at http://localhost:%s/`, bind_port);
   sendLarkMessage("ApolloServer  started ..");
 };
 
