@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/index.ts",
+    "calculate": "ts-node src/calculate.ts",
     "collect:supply": "ts-node src/collect.ts -t supply",
     "collect:redeem": "ts-node src/collect.ts -t redeem",
     "prisma:generate": "prisma migrate generate",
