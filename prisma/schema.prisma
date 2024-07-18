@@ -20,7 +20,8 @@ model Supply {
   symbol            String
   decimals          Int
   amount            String
-  left_amount       String  
+  left_amount       String
+  changed           Int       @default(0)
   timestamp         BigInt
   @@index([address])
 }
@@ -43,7 +44,7 @@ model Point {
   id            Int       @id @default(autoincrement())
   address                  String
   point_type               String
-  supply_id                String
+  link_id                 String
   point                    Float  
   last_timestamp           BigInt
   @@index([address])
