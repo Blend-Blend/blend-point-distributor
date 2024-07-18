@@ -1,9 +1,6 @@
 import { getLogger } from "./utils/config";
 import dotenv from "dotenv";
-import { GraphQLError } from "graphql";
-import { PrismaClient } from "@prisma/client";
 import { sendLarkMessage } from "./utils/lark";
-import fs from "fs";
 import { Command } from "commander";
 import {
   sleep,
@@ -13,36 +10,14 @@ import {
 } from "./utils/markProcess";
 import { queryGraph, redeemQuery, supplieQuery } from "./utils/graphClient";
 import path from "path";
+import { collectByType } from "./collector";
+import { exit } from "process";
 
 dotenv.config();
 
 const logger = getLogger();
-const sleepInterval = 5;
-const page_len = 3;
-
-const collectByType = (type: string, resp: any) => {
-  if (type == "supplie") {
-    resp.data.supplies.forEach((item: any) => {
-      logger.info(`load item: ${item.timestamp}`);
-    });
-    return {
-      item_count: resp.data.supplies.length,
-      last_item: resp.data.supplies[resp.data.supplies.length - 1],
-    };
-  } else if (type == "redeem") {
-    resp.data.redeemUnderlyings.forEach((item: any) => {
-      logger.info(`load item: ${item.timestamp}`);
-    });
-    return {
-      item_count: resp.data.redeemUnderlyings.length,
-      last_item:
-        resp.data.redeemUnderlyings[resp.data.redeemUnderlyings.length - 1],
-    };
-  } else {
-    logger.fatal("type is not supported");
-    return { item_count: 0, last_item: null };
-  }
-};
+const sleepInterval = 10;
+const page_len = 10;
 
 const main = async () => {
   const program = new Command();
@@ -53,14 +28,15 @@ const main = async () => {
   sendLarkMessage(`start collect ${ops.type} data`);
 
   let query: any;
-  if (ops.type == "supplie") {
-    initConfig(path.resolve(__dirname, "../runtime/supplie.json"));
+  if (ops.type == "supply") {
+    initConfig(path.resolve(__dirname, "../runtime/supply.json"));
     query = supplieQuery;
   } else if (ops.type == "redeem") {
     initConfig(path.resolve(__dirname, "../runtime/redeem.json"));
     query = redeemQuery;
   } else {
     logger.fatal("type is not supported");
+    exit(1);
   }
 
   while (true) {
@@ -70,7 +46,10 @@ const main = async () => {
       first: page_len,
       timestamp_gt: last_time_stamp,
     });
-    let { item_count, last_item } = collectByType(ops.type, resp);
+    let { item_count, last_item } = (await collectByType(
+      ops.type,
+      resp
+    )) as any;
     logger.info(`get ${item_count} items`);
     if (item_count == page_len) {
       logger.info(`write last item timestamp `);
