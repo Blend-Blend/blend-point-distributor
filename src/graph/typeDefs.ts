@@ -20,8 +20,8 @@ export const typeDefs = `#graphql
   type Point {
     rank: Int
     address: String
-    supply: Float
-    lend: Float
+    points: Float
+    supply_points: Float
   }
 
   type Mutation {

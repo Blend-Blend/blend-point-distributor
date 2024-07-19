@@ -180,8 +180,11 @@ const calculateSummary = async () => {
     }
   });
 
+  console.log(addressMap);
+
   let txs: any[] = [];
   for (const [address, data] of addressMap) {
+    console.log(address, data.points, data.supply_points);
     txs.push(
       db_client.pointSummary.upsert({
         where: {
@@ -189,14 +192,15 @@ const calculateSummary = async () => {
         },
         create: {
           address: address,
-          supply_points: data.supply_points,
           rank: 0,
+          supply_points: data.supply_points,
           points: data.points,
           last_timestamp: Math.floor(new Date().getTime() / 1000),
         },
         update: {
           rank: 0,
           points: data.points,
+          supply_points: data.supply_points,
           last_timestamp: Math.floor(new Date().getTime() / 1000),
         },
       })
