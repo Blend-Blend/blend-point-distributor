@@ -46,32 +46,38 @@ const calculateMappingTest: AssetMapping = {
   },
 };
 
+// wBTC：0xB5136FEba197f5fF4B765E5b50c74db717796dcD
+// SAT: 0xF2692468666E459D87052f68aE474E36C1a34fbB
+// bUSDT: 0xa67ed736649f2958a35fd249a584151056b4b745
+// bUSDC: 0x915247bf09471922e2c6da6f69fc9114708e8a26
+// bETH: 0x948def74953a18ebd854a5b015f63b0910be58cc
+
 const calculateMapping: AssetMapping = {
-  "0x1": {
-    symbol: "zUSDT",
+  "0xa67ed736649f2958a35fd249a584151056b4b745": {
+    symbol: "bUSDT",
     min_amount: 1,
     per_amount: 100,
     point_daily: 100,
   },
-  "0x2": {
-    symbol: "zUSDC",
+  "0x915247bf09471922e2c6da6f69fc9114708e8a26": {
+    symbol: "bUSDC",
     min_amount: 1,
     per_amount: 100,
     point_daily: 100,
   },
-  "0x3": {
+  "0xF2692468666E459D87052f68aE474E36C1a34fbB": {
     symbol: "SAT",
     min_amount: 1,
     per_amount: 100,
     point_daily: 100,
   },
-  "0x4": {
-    symbol: "zETH",
+  "0x948def74953a18ebd854a5b015f63b0910be58cc": {
+    symbol: "bETH",
     min_amount: 0.001,
     per_amount: 1,
     point_daily: 3000,
   },
-  "0x5": {
+  "0xB5136FEba197f5fF4B765E5b50c74db717796dcD": {
     symbol: "BTC",
     min_amount: 0.0001,
     per_amount: 1,
