@@ -5,6 +5,7 @@ export const Points = async (_parent: any, args: any, _context: MyContext) => {
     orderBy: {
       points: "desc",
     },
+    take: 100,
   });
 };
 

@@ -6,7 +6,7 @@ import { resolvers, typeDefs } from "./graph";
 import { PrismaClient } from "@prisma/client";
 import { MyContext } from "./utils/context";
 import cors from "cors";
-import express from "express";
+import express, { Request, Response } from "express";
 import http from "http";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
@@ -51,6 +51,51 @@ const main = async () => {
   });
 
   await server.start();
+
+  //   GET /api/getPoints?address=0xYourEVMAddress
+  // Host: yourdomain.com
+  // Content-Type: application/json
+
+  // Response：
+  // {
+  //     "success": true,
+  //     "data": {
+  //         "address": "0xYourEVMAddress",
+  //         "points": 1234
+  //     }
+  // }
+
+  app.get("/api/getPoints", async (_req: Request, res: Response) => {
+    const { address } = _req.query;
+    if (address) {
+      const summary = await client.pointSummary.findFirst({
+        where: {
+          address: address as string,
+        },
+      });
+
+      if (summary) {
+        res.json({
+          success: true,
+          data: {
+            address,
+            points: summary.points,
+          },
+        });
+      } else {
+        res.status(404).json({
+          success: false,
+          error: "address not found",
+        });
+      }
+    } else {
+      res.status(400).json({
+        success: false,
+        error: "address is required",
+      });
+    }
+  });
+
   app.use(
     "/",
     cors(corsOption),
