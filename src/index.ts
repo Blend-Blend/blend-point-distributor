@@ -70,7 +70,7 @@ const main = async () => {
     if (address) {
       const summary = await client.pointSummary.findFirst({
         where: {
-          address: address as string,
+          address: (address as string).toLocaleLowerCase(),
         },
       });
 

@@ -15,7 +15,7 @@ export const Point = async (_parent: any, args: any, _context: MyContext) => {
       where: { address },
     } = args;
     return _context.client?.pointSummary.findFirst({
-      where: { address },
+      where: { address: String(address).toLowerCase() },
     });
   } else {
     return null;
