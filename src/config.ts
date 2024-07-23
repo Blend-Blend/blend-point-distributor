@@ -65,7 +65,7 @@ const calculateMapping: AssetMapping = {
     per_amount: 100,
     point_daily: 100,
   },
-  "0xF2692468666E459D87052f68aE474E36C1a34fbB": {
+  "0xf2692468666e459d87052f68ae474e36c1a34fbb": {
     symbol: "SAT",
     min_amount: 1,
     per_amount: 100,
@@ -77,7 +77,7 @@ const calculateMapping: AssetMapping = {
     per_amount: 1,
     point_daily: 3000,
   },
-  "0xB5136FEba197f5fF4B765E5b50c74db717796dcD": {
+  "0xb5136feba197f5ff4b765e5b50c74db717796dcd": {
     symbol: "BTC",
     min_amount: 0.0001,
     per_amount: 1,

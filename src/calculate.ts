@@ -108,7 +108,7 @@ const sendPoints = async () => {
   });
 
   for (let supply of supplies) {
-    let assetAddress = supply.underlyingAsset;
+    let assetAddress = supply.underlyingAsset.toLowerCase();
     let config = calculateMapping[assetAddress];
     if (config) {
       logger.info(
