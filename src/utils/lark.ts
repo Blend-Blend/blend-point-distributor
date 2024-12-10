@@ -26,29 +26,27 @@ export interface ExecResult {
 }
 
 export const sendLarkMessage = async (message: string) => {
-  if (process.env.is_debug == "true") {
-    logger.warn("debug mode, skip send message to lark");
-    return;
-  }
-
-  const now = Math.round(new Date().getTime() / 1000);
-  const sign = getSign(now);
-  const url = `https://open.larksuite.com/open-apis/bot/v2/hook/${process.env.LARK_APP_ID}?timestamp=${now}&sign=${sign}`;
-  const data = {
-    msg_type: "text",
-    content: {
-      text: ` ${message}  [ ${new Date().toISOString()} ] FROM : ${os.hostname()}`,
-    },
-  };
-
-  const res = await fetch(url, { method: "POST", body: JSON.stringify(data) });
-  const result = await res.json();
-  if (result.msg != "success") {
-    logger.error("send message to lark failed ❌ ");
-    throw new Error(result.msg);
-  } else {
-    logger.info("send message to lark success 🚀 ");
-  }
+  // if (process.env.is_debug == "true") {
+  //   logger.warn("debug mode, skip send message to lark");
+  //   return;
+  // }
+  // const now = Math.round(new Date().getTime() / 1000);
+  // const sign = getSign(now);
+  // const url = `https://open.larksuite.com/open-apis/bot/v2/hook/${process.env.LARK_APP_ID}?timestamp=${now}&sign=${sign}`;
+  // const data = {
+  //   msg_type: "text",
+  //   content: {
+  //     text: ` ${message}  [ ${new Date().toISOString()} ] FROM : ${os.hostname()}`,
+  //   },
+  // };
+  // const res = await fetch(url, { method: "POST", body: JSON.stringify(data) });
+  // const result = await res.json();
+  // if (result.msg != "success") {
+  //   logger.error("send message to lark failed ❌ ");
+  //   throw new Error(result.msg);
+  // } else {
+  //   logger.info("send message to lark success 🚀 ");
+  // }
 };
 
 export const execPromise = (command: string) => {
