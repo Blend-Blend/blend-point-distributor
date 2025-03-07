@@ -257,6 +257,45 @@ program
     }
   });
 
+program
+  .command("summary")
+  .description("summary users")
+  .action(async () => {
+    const summary = await dbClient.dailyPoint.groupBy({
+      by: ["user_id"],
+      _sum: {
+        blend_point: true,
+        yuzu_point: true,
+        blend_lend: true,
+        blend_borrow: true,
+        yuzu_lend: true,
+        yuzu_borrow: true,
+      },
+    });
+
+    for (let item of summary) {
+      await dbClient.userSummary.upsert({
+        where: { user_id: item.user_id },
+        create: {
+          user_id: item.user_id,
+          blend_point: item._sum.blend_point ?? 0,
+          yuzu_point: item._sum.yuzu_point ?? 0,
+          blend_lend: item._sum.blend_lend ?? 0,
+          blend_borrow: item._sum.blend_borrow ?? 0,
+          yuzu_lend: item._sum.yuzu_lend ?? 0,
+          yuzu_borrow: item._sum.yuzu_borrow ?? 0,
+        },
+        update: {
+          blend_point: item._sum.blend_point ?? 0,
+          yuzu_point: item._sum.yuzu_point ?? 0,
+          blend_lend: item._sum.blend_lend ?? 0,
+          blend_borrow: item._sum.blend_borrow ?? 0,
+          yuzu_lend: item._sum.yuzu_lend ?? 0,
+          yuzu_borrow: item._sum.yuzu_borrow ?? 0,
+        },
+      });
+  });
+
 const main = async () => {
   program.parse(process.argv);
 };
