@@ -27,6 +27,13 @@ const logger = getLogger();
 const dbClient = new PrismaClient();
 
 program
+  .command("dump-users")
+  .description("dump users")
+  .action(async () => {
+    await fetchUsers();
+  });
+
+program
   .command("send-history")
   .description("send history point to users")
   .option("-m, --month <month>", "month")
