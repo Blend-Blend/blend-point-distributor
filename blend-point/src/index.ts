@@ -113,7 +113,9 @@ program
             yuzu_borrow: yuzuBorrow,
           },
         });
-      } catch (error) {}
+      } catch (error) {
+        logger.error(`database error: ${error}`);
+      }
 
       logger.info(
         `>>>>>> ${user} stake: ${userReserveUSD.stakeAmount} debt: ${
