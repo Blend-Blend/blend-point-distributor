@@ -4,7 +4,7 @@ import {
   InMemoryCache,
   gql,
 } from "@apollo/client/core";
-import { getLogger } from "./utils";
+import { getLogger, sleep } from "./utils";
 import fs from "fs";
 const logger = getLogger();
 import { graphUrl } from "./config";
@@ -205,6 +205,8 @@ export async function fetchUsers() {
       lastTimestamp = userReserves[userReserves.length - 1].lastUpdateTimestamp;
       let formattedLastTimestamp = new Date(lastTimestamp * 1000).toISOString();
       logger.info(`lastTimestamp: ${formattedLastTimestamp}`);
+
+      await sleep(2000);
     }
 
     fs.writeFileSync("users.json", JSON.stringify(users, null, 2));
@@ -219,15 +221,21 @@ export const getUserReserve = async (
   user: string,
   token: string,
   historyTimeStamp: number
-) => {
-  const result = await queryGraph<{
-    userReserves: UserReserve[];
-  }>(getUserTokenReserve, {
-    user,
-    token,
-    timestamp: historyTimeStamp,
-  });
-  return result.data.userReserves;
+): Promise<UserReserve[]> => {
+  try {
+    const result = await queryGraph<{
+      userReserves: UserReserve[];
+    }>(getUserTokenReserve, {
+      user,
+      token,
+      timestamp: historyTimeStamp,
+    });
+    return result.data.userReserves;
+  } catch (error) {
+    logger.error(`getUserReserve error: ${error}`);
+    await sleep(3000);
+    return getUserReserve(user, token, historyTimeStamp);
+  }
 };
 
 // fetchUsers();

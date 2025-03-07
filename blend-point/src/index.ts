@@ -43,12 +43,14 @@ program
     logger.info(`historyTimeStamp: ${historyTimeStamp}`);
     await fetchHistoryPriceCache(historyTimeStamp);
     const users = loadUsers();
-    for (let user of users) {
+    for (let index = 0; index < users.length; index += 1) {
+      const user = users[index];
       const userReserveUSD: UserReserveUSD = {
         id: user,
         stakeAmount: 0,
         debtAmount: 0,
       };
+      logger.info(`deal with user: ${user} ${index + 1}/${users.length}`);
       for (let token of tokens) {
         const coinID = coinIDs[token as keyof typeof coinIDs];
         const price = getCache<HistoryPrice>(
@@ -143,7 +145,7 @@ program
         stakeAmount: 0,
         debtAmount: 0,
       };
-      logger.info(` deal with  user: ${user} `);
+      logger.info(`deal with user: ${user} ${i + 1}/${users.length}`);
 
       for (let token of tokens) {
         const coinID = coinIDs[token as keyof typeof coinIDs];
