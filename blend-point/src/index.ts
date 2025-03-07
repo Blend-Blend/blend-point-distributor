@@ -294,6 +294,7 @@ program
           yuzu_borrow: item._sum.yuzu_borrow ?? 0,
         },
       });
+    }
   });
 
 const main = async () => {
