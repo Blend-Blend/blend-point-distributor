@@ -280,6 +280,7 @@ const makeSummary = async () => {
         blend_borrow: item._sum.blend_borrow ?? 0,
         yuzu_lend: item._sum.yuzu_lend ?? 0,
         yuzu_borrow: item._sum.yuzu_borrow ?? 0,
+        last_time: new Date(),
       },
       update: {
         blend_point: item._sum.blend_point ?? 0,
@@ -288,6 +289,7 @@ const makeSummary = async () => {
         blend_borrow: item._sum.blend_borrow ?? 0,
         yuzu_lend: item._sum.yuzu_lend ?? 0,
         yuzu_borrow: item._sum.yuzu_borrow ?? 0,
+        last_time: new Date(),
       },
     });
   }
