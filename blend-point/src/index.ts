@@ -38,96 +38,121 @@ program
   .description("send history point to users")
   .option("-m, --month <month>", "month")
   .option("-d, --day <day>", "day")
-  .action(async ({ month, day }: { month: number; day: number }) => {
-    const historyTimeStamp = dayUTC8Zero(2025, month, day);
-    logger.info(`historyTimeStamp: ${historyTimeStamp}`);
-    await fetchHistoryPriceCache(historyTimeStamp);
-    const users = loadUsers();
-    for (let index = 0; index < users.length; index += 1) {
-      const user = users[index];
-      const userReserveUSD: UserReserveUSD = {
-        id: user,
-        stakeAmount: 0,
-        debtAmount: 0,
+  .option("-r, --range <range>", "range", "")
+  .action(
+    async ({
+      month,
+      day,
+      range,
+    }: {
+      month: number;
+      day: number;
+      range: string;
+    }) => {
+      const loopOneDay = async (dayNum: number) => {
+        const historyTimeStamp = dayUTC8Zero(2025, month, dayNum);
+        logger.info(`historyTimeStamp: ${historyTimeStamp}`);
+        await fetchHistoryPriceCache(historyTimeStamp);
+        const users = loadUsers();
+        for (let index = 0; index < users.length; index += 1) {
+          const user = users[index];
+          const userReserveUSD: UserReserveUSD = {
+            id: user,
+            stakeAmount: 0,
+            debtAmount: 0,
+          };
+          logger.info(`deal with user: ${user} ${index + 1}/${users.length}`);
+          for (let token of tokens) {
+            const coinID = coinIDs[token as keyof typeof coinIDs];
+            const price = getCache<HistoryPrice>(
+              `price_history_${token}`
+            ) as HistoryPrice;
+            logger.info(`history price: ${price}`);
+            const userReserves = await getUserReserve(
+              user,
+              token,
+              historyTimeStamp
+            );
+            if (userReserves.length > 0) {
+              const userReserve = userReserves[0];
+              const btoken = userReserve.bTokenBalanceHistory;
+              const vtoken = userReserve.vTokenBalanceHistory;
+              // stake
+              if (btoken.length > 0) {
+                const tokenAmount =
+                  parseFloat(btoken[0].scaledBTokenBalance) /
+                  10 ** tokenDecimals[token as keyof typeof tokenDecimals];
+                logger.info(`stakeAmount: ${tokenAmount} ${token} ${coinID}`);
+                userReserveUSD.stakeAmount += tokenAmount * price.price;
+              }
+              // debt
+              if (vtoken.length > 0) {
+                const tokenAmount =
+                  parseFloat(vtoken[0].scaledVariableDebt) /
+                  10 ** tokenDecimals[token as keyof typeof tokenDecimals];
+                logger.info(`debtAmount: ${tokenAmount} ${token} ${coinID}`);
+                userReserveUSD.debtAmount += tokenAmount * price.price;
+              }
+            } else {
+              logger.info(`no ${token} reserve`);
+            }
+          }
+
+          logger.info(`========== let's send point to ${user} ==========`);
+          logger.info(`stakeAmount: ${userReserveUSD.stakeAmount}`);
+          logger.info(`debtAmount: ${userReserveUSD.debtAmount}`);
+
+          const {
+            totalPoint,
+            yuzuTotalPoint,
+            blendLend,
+            blendBorrow,
+            yuzuLend,
+            yuzuBorrow,
+          } = calculatePoint(userReserveUSD);
+
+          try {
+            await dbClient.dailyPoint.create({
+              data: {
+                user_id: user,
+                blend_point: totalPoint,
+                yuzu_point: yuzuTotalPoint,
+                stake_usd: userReserveUSD.stakeAmount,
+                debt_usd: userReserveUSD.debtAmount,
+                send_date: formatDate(historyTimeStamp),
+                blend_lend: blendLend,
+                blend_borrow: blendBorrow,
+                yuzu_lend: yuzuLend,
+                yuzu_borrow: yuzuBorrow,
+              },
+            });
+          } catch (error) {
+            logger.error(`database error: ${error}`);
+          }
+
+          logger.info(
+            `>>>>>> ${user} stake: ${userReserveUSD.stakeAmount} debt: ${
+              userReserveUSD.debtAmount
+            } blend: ${totalPoint} yuzu: ${yuzuTotalPoint} ${formatDate(
+              historyTimeStamp
+            )}`
+          );
+        }
       };
-      logger.info(`deal with user: ${user} ${index + 1}/${users.length}`);
-      for (let token of tokens) {
-        const coinID = coinIDs[token as keyof typeof coinIDs];
-        const price = getCache<HistoryPrice>(
-          `price_history_${token}`
-        ) as HistoryPrice;
-        logger.info(`history price: ${price}`);
-        const userReserves = await getUserReserve(
-          user,
-          token,
-          historyTimeStamp
-        );
-        if (userReserves.length > 0) {
-          const userReserve = userReserves[0];
-          const btoken = userReserve.bTokenBalanceHistory;
-          const vtoken = userReserve.vTokenBalanceHistory;
-          // stake
-          if (btoken.length > 0) {
-            const tokenAmount =
-              parseFloat(btoken[0].scaledBTokenBalance) /
-              10 ** tokenDecimals[token as keyof typeof tokenDecimals];
-            logger.info(`stakeAmount: ${tokenAmount} ${token} ${coinID}`);
-            userReserveUSD.stakeAmount += tokenAmount * price.price;
-          }
-          // debt
-          if (vtoken.length > 0) {
-            const tokenAmount =
-              parseFloat(vtoken[0].scaledVariableDebt) /
-              10 ** tokenDecimals[token as keyof typeof tokenDecimals];
-            logger.info(`debtAmount: ${tokenAmount} ${token} ${coinID}`);
-            userReserveUSD.debtAmount += tokenAmount * price.price;
-          }
-        } else {
-          logger.info(`no ${token} reserve`);
+
+      if (range == "") {
+        await loopOneDay(day);
+      } else {
+        const segments = range.split("-");
+        const start = parseInt(segments[0]);
+        const end = parseInt(segments[1]);
+        for (let i = start; i <= end; i += 1) {
+          logger.info(` >>> loop ${i} day`);
+          await loopOneDay(i);
         }
       }
-
-      logger.info(`========== let's send point to ${user} ==========`);
-      logger.info(`stakeAmount: ${userReserveUSD.stakeAmount}`);
-      logger.info(`debtAmount: ${userReserveUSD.debtAmount}`);
-
-      const {
-        totalPoint,
-        yuzuTotalPoint,
-        blendLend,
-        blendBorrow,
-        yuzuLend,
-        yuzuBorrow,
-      } = calculatePoint(userReserveUSD);
-
-      try {
-        await dbClient.dailyPoint.create({
-          data: {
-            user_id: user,
-            blend_point: totalPoint,
-            yuzu_point: yuzuTotalPoint,
-            stake_usd: userReserveUSD.stakeAmount,
-            debt_usd: userReserveUSD.debtAmount,
-            send_date: formatDate(historyTimeStamp),
-            blend_lend: blendLend,
-            blend_borrow: blendBorrow,
-            yuzu_lend: yuzuLend,
-            yuzu_borrow: yuzuBorrow,
-          },
-        });
-      } catch (error) {
-        logger.error(`database error: ${error}`);
-      }
-
-      logger.info(
-        `>>>>>> ${user} stake: ${userReserveUSD.stakeAmount} debt: ${
-          userReserveUSD.debtAmount
-        } blend: ${totalPoint} yuzu: ${yuzuTotalPoint} ${formatDate(
-          historyTimeStamp
-        )}`
-      );
     }
-  });
+  );
 
 program
   .command("send-today")
