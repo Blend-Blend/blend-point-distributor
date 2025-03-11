@@ -38,16 +38,19 @@ program
   .description("send history point to users")
   .option("-m, --month <month>", "month")
   .option("-d, --day <day>", "day")
+  .option("-k, --skip", "skip existing users", false)
   .option("-r, --range <range>", "range", "")
   .action(
     async ({
       month,
       day,
       range,
+      skip,
     }: {
       month: number;
       day: number;
       range: string;
+      skip: boolean;
     }) => {
       const loopOneDay = async (dayNum: number) => {
         const historyTimeStamp = dayUTC8Zero(2025, month, dayNum);
@@ -56,6 +59,16 @@ program
         const users = loadUsers();
         for (let index = 0; index < users.length; index += 1) {
           const user = users[index];
+          if (skip) {
+            const point = await dbClient.dailyPoint.findFirst({
+              where: { user_id: user, send_date: formatDate(historyTimeStamp) },
+            });
+            if (point) {
+              logger.info(`skip ${user} ${historyTimeStamp}`);
+              continue;
+            }
+          }
+
           const userReserveUSD: UserReserveUSD = {
             id: user,
             stakeAmount: 0,
