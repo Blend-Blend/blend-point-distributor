@@ -283,7 +283,9 @@ const makeSummary = async () => {
   });
 
   // 按总和降序排序
-  summary.sort((a, b) => (b._sum.blend_point ?? 0) - (a._sum.blend_point ?? 0));
+  summary.sort(
+    (a: any, b: any) => (b._sum.blend_point ?? 0) - (a._sum.blend_point ?? 0)
+  );
 
   for (let index = 0; index < summary.length; index += 1) {
     const item = summary[index];
