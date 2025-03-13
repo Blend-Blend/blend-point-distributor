@@ -16,6 +16,9 @@ RUN npm install -g pnpm
 # Install all dependencies (including devDependencies)
 RUN pnpm install
 
+# Install TypeScript globally for build
+RUN pnpm add -g typescript
+
 # Copy source code and prisma schema
 COPY . .
 
