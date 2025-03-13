@@ -1,8 +1,12 @@
 {
-  "name": "blend-point",
+  "name": "@credit-system/blend-point",
   "version": "1.0.0",
   "main": "index.js",
+  "bin": {
+    "blend-point": "./dist/index.js"
+  },
   "scripts": {
+    "build": "tsc",
     "test": "ts-node --transpile-only src/test.ts",
     "test-all": "mocha --require ts-node/register test/*/*.test.ts",
     "start": "ts-node --transpile-only src/index.ts"

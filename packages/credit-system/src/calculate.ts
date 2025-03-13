@@ -163,7 +163,7 @@ const calculateSummary = async () => {
 
   const addressMap = new Map();
 
-  summaryData.forEach((data) => {
+  summaryData.forEach((data: any) => {
     if (!addressMap.has(data.address)) {
       addressMap.set(data.address, {
         address: data.address,
