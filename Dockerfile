@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y openssl
 # Copy package files and prisma schema
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
-COPY prisma ./prisma
+COPY packages/blend-point/prisma ./packages/blend-point/prisma
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -55,4 +55,4 @@ ENV INSTANCE_CONNECTION_NAME=level-poetry-395302:us-central1:moveflow
 # 这些应该在部署时通过 Cloud Run 设置
 
 # Expose the port the app runs on
-EXPOSE 8080 
+EXPOSE 8080
