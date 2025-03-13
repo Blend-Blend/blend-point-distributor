@@ -6,7 +6,7 @@
     "blend-point": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && pnpm prisma generate",
     "test": "ts-node --transpile-only src/test.ts",
     "test-all": "mocha --require ts-node/register test/*/*.test.ts",
     "start": "ts-node --transpile-only src/index.ts"
