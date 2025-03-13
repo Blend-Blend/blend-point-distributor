@@ -282,7 +282,11 @@ const makeSummary = async () => {
     },
   });
 
-  for (let item of summary) {
+  // 按总和降序排序
+  summary.sort((a, b) => (b._sum.blend_point ?? 0) - (a._sum.blend_point ?? 0));
+
+  for (let index = 0; index < summary.length; index += 1) {
+    const item = summary[index];
     await dbClient.userSummary.upsert({
       where: { user_id: item.user_id },
       create: {
@@ -294,6 +298,7 @@ const makeSummary = async () => {
         yuzu_lend: item._sum.yuzu_lend ?? 0,
         yuzu_borrow: item._sum.yuzu_borrow ?? 0,
         last_time: new Date(),
+        rank: index + 1,
       },
       update: {
         blend_point: item._sum.blend_point ?? 0,
@@ -303,6 +308,7 @@ const makeSummary = async () => {
         yuzu_lend: item._sum.yuzu_lend ?? 0,
         yuzu_borrow: item._sum.yuzu_borrow ?? 0,
         last_time: new Date(),
+        rank: index + 1,
       },
     });
   }
