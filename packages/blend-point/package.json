@@ -6,7 +6,7 @@
     "blend-point": "./dist/index.js"
   },
   "scripts": {
-    "build": "tsc && pnpm prisma generate",
+    "build": "pnpm prisma generate && tsc",
     "test": "ts-node --transpile-only src/test.ts",
     "test-all": "mocha --require ts-node/register test/*/*.test.ts",
     "start": "ts-node --transpile-only src/index.ts"
@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.13.1",
+    "@prisma/client": "6.5.0",
     "axios": "^1.8.1",
     "commander": "^13.1.0",
     "dotenv": "^16.4.7",

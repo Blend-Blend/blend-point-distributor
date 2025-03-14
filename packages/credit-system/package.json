@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && pnpm prisma generate",
+    "build": "pnpm prisma generate && tsc",
     "start": "ts-node src/index.ts",
     "calculate": "ts-node src/calculate.ts",
     "collect:supply": "ts-node src/collect.ts -t supply",
