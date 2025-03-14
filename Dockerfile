@@ -53,6 +53,9 @@ RUN npm install -g pnpm
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 
+# Install production dependencies
+RUN pnpm install --prod
+
 # Set default environment variables
 ENV PORT=8080
 ENV NODE_ENV=production
