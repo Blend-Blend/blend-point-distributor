@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y openssl
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
+COPY packages/*/package.json ./packages/
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -21,7 +22,7 @@ ENV PATH=$PNPM_HOME:$PATH
 RUN pnpm install --frozen-lockfile
 
 # Install TypeScript and necessary typings globally for build
-RUN pnpm add -g typescript @types/node dotenv
+RUN pnpm add -DW @types/node dotenv @types/dotenv
 
 # Copy source code and prisma schema
 COPY . .
@@ -63,3 +64,6 @@ ENV INSTANCE_CONNECTION_NAME=level-poetry-395302:us-central1:moveflow
 
 # Expose the port the app runs on
 EXPOSE 8080
+
+# Start the application
+CMD ["pnpm", "--filter=@credit-system/blend-point", "start"]
