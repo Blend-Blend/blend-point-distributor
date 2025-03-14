@@ -3,7 +3,6 @@
     "build": "pnpm -r build"
   },
   "devDependencies": {
-    "@credit-system/test": "workspace:*",
     "@credit-system/blend-point": "workspace:*",
     "@credit-system/credit-system": "workspace:*"
   }
