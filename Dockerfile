@@ -13,6 +13,9 @@ COPY pnpm-lock.yaml ./
 # Install pnpm
 RUN npm install -g pnpm
 
+ENV PNPM_HOME=/root/.local/share/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+
 # Install all dependencies (including devDependencies)
 RUN pnpm install
 
