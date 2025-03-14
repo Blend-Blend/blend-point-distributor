@@ -6,32 +6,22 @@ WORKDIR /app
 # Install OpenSSL for Prisma
 RUN apt-get update && apt-get install -y openssl
 
-# Copy package files
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
-COPY pnpm-workspace.yaml ./
-COPY packages/*/package.json ./packages/
-
-# Install pnpm
+# Install pnpm globally
 RUN npm install -g pnpm
-
 ENV PNPM_HOME=/root/.local/share/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 
-# Install all dependencies (including devDependencies)
-RUN pnpm install --frozen-lockfile
-
-# Install TypeScript and necessary typings globally for build
-RUN pnpm add -DW @types/node dotenv @types/dotenv
-
-# Copy source code and prisma schema
+# Copy all files
 COPY . .
 
-# Generate Prisma client
-RUN pnpm --filter=@credit-system/blend-point prisma generate
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
 # Build the application
-RUN pnpm build
+RUN pnpm -r build
+
+# # Generate Prisma client for the subproject
+# RUN cd packages/blend-point && pnpm prisma generate
 
 # Production stage
 FROM node:23.3.0-slim
@@ -41,16 +31,18 @@ WORKDIR /app
 # Install OpenSSL for Prisma
 RUN apt-get update && apt-get install -y openssl
 
-# Copy package files and prisma schema
+# Install pnpm globally
+RUN npm install -g pnpm
+ENV PNPM_HOME=/root/.local/share/pnpm
+ENV PATH=$PNPM_HOME:$PATH
+
+# Copy package files and Prisma schema
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY packages/blend-point/prisma ./packages/blend-point/prisma
 
-# Install pnpm
-RUN npm install -g pnpm
-
-# Copy node_modules from builder to avoid reinstalling
+# Copy node_modules and built files from builder stage
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 
