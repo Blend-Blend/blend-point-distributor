@@ -20,8 +20,8 @@ ENV PATH=$PNPM_HOME:$PATH
 # Install all dependencies (including devDependencies)
 RUN pnpm install --frozen-lockfile
 
-# Install TypeScript globally for build
-RUN pnpm add -g typescript
+# Install TypeScript and necessary typings globally for build
+RUN pnpm add -g typescript @types/node dotenv
 
 # Copy source code and prisma schema
 COPY . .
