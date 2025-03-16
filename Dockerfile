@@ -1,63 +1,36 @@
 # Build stage
 FROM node:23.3.0-slim AS builder
-
 WORKDIR /app
-
-# Install OpenSSL for Prisma
 RUN apt-get update && apt-get install -y openssl
-
-# Install pnpm
 RUN npm install -g pnpm
-
-# Copy package files
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
-
-# Install all dependencies (including devDependencies)
-RUN pnpm install
-
-# Copy source code and prisma schema
 COPY . .
-
+RUN pnpm install
 # Generate Prisma client
 RUN pnpm run generate  # 确保生成Prisma客户端
-
 # Build the application
-RUN pnpm build
+RUN pnpm run -r build
+RUN pnpm install
 
 # Production stage
 FROM node:23.3.0-slim
-
 WORKDIR /app
-
-# Install OpenSSL for Prisma
 RUN apt-get update && apt-get install -y openssl
-
-# Copy package files and prisma schema
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY packages/*/package.json ./packages/*/
-COPY packages/*/prisma ./packages/*/prisma
-
-# Install pnpm
 RUN npm install -g pnpm
 
-# Copy node_modules from builder to avoid reinstalling
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/packages/*/node_modules ./packages/*/node_modules
 
-# Copy built application from builder stage
-COPY --from=builder /app/packages/*/dist ./packages/*/dist
+COPY --from=builder /app/packages/blend-point/node_modules ./packages/blend-point/node_modules
+COPY --from=builder /app/packages/credit-system/node_modules ./packages/credit-system/node_modules
 
-# Set default environment variables
+COPY --from=builder /app/packages/blend-point/dist ./packages/blend-point/dist
+COPY --from=builder /app/packages/credit-system/dist ./packages/credit-system/dist
+
 ENV PORT=8080
 ENV NODE_ENV=production
 ENV INSTANCE_CONNECTION_NAME=level-poetry-395302:us-central1:moveflow
-# 注意：不要在 Dockerfile 中设置敏感信息如密码
-# 这些应该在部署时通过 Cloud Run 设置
-
-# Expose the port the app runs on
 EXPOSE 8080
-
-# Command to run the application
-# CMD ["pnpm", "start"]
