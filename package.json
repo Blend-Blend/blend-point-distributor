@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "generate": "pnpm -r prisma generate",
     "build": "pnpm -r build"
   },
   "dependencies": {
