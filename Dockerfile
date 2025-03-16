@@ -16,7 +16,7 @@ RUN pnpm install
 COPY . .
 
 # Generate Prisma client
-RUN pnpm generate
+RUN pnpm prisma generate  # 确保生成Prisma客户端
 
 # Build the application
 RUN pnpm build
@@ -56,4 +56,4 @@ ENV INSTANCE_CONNECTION_NAME=level-poetry-395302:us-central1:moveflow
 EXPOSE 8080
 
 # Command to run the application
-# CMD ["pnpm", "start"] 
+# CMD ["pnpm", "start"]
