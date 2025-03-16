@@ -20,7 +20,7 @@ RUN pnpm install
 COPY . .
 
 # Generate Prisma client
-RUN pnpm prisma generate  # 确保生成Prisma客户端
+RUN pnpm run generate  # 确保生成Prisma客户端
 
 # Build the application
 RUN pnpm build
