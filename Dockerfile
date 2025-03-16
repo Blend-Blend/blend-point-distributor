@@ -9,6 +9,10 @@ RUN apt-get update && apt-get install -y openssl
 # Install pnpm
 RUN npm install -g pnpm
 
+# Copy package files
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+
 # Install all dependencies (including devDependencies)
 RUN pnpm install
 
@@ -45,7 +49,7 @@ COPY --from=builder /app/packages/*/node_modules ./packages/*/node_modules
 # Copy built application from builder stage
 COPY --from=builder /app/packages/*/dist ./packages/*/dist
 
-# Set default environmet variables
+# Set default environment variables
 ENV PORT=8080
 ENV NODE_ENV=production
 ENV INSTANCE_CONNECTION_NAME=level-poetry-395302:us-central1:moveflow
