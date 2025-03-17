@@ -3,13 +3,9 @@ FROM node:23.3.0-slim AS builder
 WORKDIR /app
 RUN apt-get update && apt-get install -y openssl
 RUN npm install -g pnpm
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
 COPY . .
 RUN pnpm install
-# Generate Prisma client
 RUN pnpm run generate  # 确保生成Prisma客户端
-# Build the application
 RUN pnpm run -r build
 RUN pnpm install
 
