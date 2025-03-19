@@ -166,8 +166,12 @@ const GET_USER = gql`
 `;
 
 export const loadUsers = () => {
-  const users = fs.readFileSync("users.json", "utf8");
-  return JSON.parse(users);
+  try {
+    const users = fs.readFileSync("users.json", "utf8");
+    return JSON.parse(users);
+  } catch (error) {
+    return [];
+  }
 };
 
 // Function to fetch and export data
