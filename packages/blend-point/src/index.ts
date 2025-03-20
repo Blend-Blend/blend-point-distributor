@@ -169,15 +169,32 @@ program
 
 program
   .command("send-today")
+  .option("-k, --skip", "skip existing users", false)
   .description("send today point to users")
-  .action(async () => {
+  .action(async ({ skip }: { skip: boolean }) => {
+    console.log("start send today point to users");
     await fetchUsers();
     const historyTimeStamp = todayUTC8Zero();
     await fetchOraclePriceCache();
     const users = loadUsers();
+    console.log(`fetch users done , ${users.length} users found`);
 
     for (let i = 0; i < users.length; i += 1) {
       const user = users[i];
+
+      if (i % 50 == 0) {
+        console.log(`deal with user: ${user} ${i + 1}/${users.length}`);
+      }
+
+      if (skip) {
+        const point = await dbClient.dailyPoint.findFirst({
+          where: { user_id: user, send_date: formatDate(historyTimeStamp) },
+        });
+        if (point) {
+          logger.info(`skip ${user} ${historyTimeStamp}`);
+          continue;
+        }
+      }
       let userReserveUSD: UserReserveUSD = {
         id: user,
         stakeAmount: 0,
@@ -259,7 +276,12 @@ program
       await sleep(100);
     }
 
+    console.log("send today point to users done");
+    console.log("start make summary");
     await makeSummary();
+    console.log("make summary done");
+
+    console.log("all work done");
   });
 
 program
