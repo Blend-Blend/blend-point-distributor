@@ -1,7 +1,8 @@
 # Build stage
 FROM node:23.3.0-slim AS builder
 WORKDIR /app
-RUN apt-get update && apt-get install -y openssl
+RUN apt-get update && apt-get install -y openssl tzdata
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 RUN npm install -g pnpm
 COPY . .
 RUN pnpm install
@@ -12,7 +13,8 @@ RUN pnpm install
 # Production stage
 FROM node:23.3.0-slim
 WORKDIR /app
-RUN apt-get update && apt-get install -y openssl
+RUN apt-get update && apt-get install -y openssl tzdata
+RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 COPY package*.json ./
 COPY pnpm-lock.yaml ./
 COPY packages/*/package.json ./packages/*/
