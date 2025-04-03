@@ -2,7 +2,7 @@ export const coingecko_token = "CG-meDzc6tbX3crBh4XRDjunyZi";
 export const oracleAddress = "0x2186a6cEe4CBbde6a9E16E44C4d615f86A913DE7";
 
 export const graphUrl =
-  "https://api.goldsky.com/api/public/project_cm040smxin6ju01x481kh0o8l/subgraphs/blend-edu/1.0.1/gn";
+  "https://api.goldsky.com/api/public/project_cm040smxin6ju01x481kh0o8l/subgraphs/blend-edu/1.0.2/gn";
 
 export const coinIDEDU = "edu-coin";
 export const coinIDETH = "ethereum";
