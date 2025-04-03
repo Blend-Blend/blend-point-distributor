@@ -40,21 +40,31 @@ program
   .option("-d, --day <day>", "day")
   .option("-k, --skip", "skip existing users", false)
   .option("-r, --range <range>", "range", "")
+  .option("-c, --clean", "clean existing user point", false)
   .action(
     async ({
       month,
       day,
       range,
       skip,
+      clean,
     }: {
       month: number;
       day: number;
       range: string;
       skip: boolean;
+      clean: boolean;
     }) => {
       const loopOneDay = async (dayNum: number) => {
         const historyTimeStamp = dayUTC8Zero(2025, month, dayNum);
         logger.info(`historyTimeStamp: ${historyTimeStamp}`);
+
+        if (clean) {
+          await dbClient.dailyPoint.deleteMany({
+            where: { send_date: formatDate(historyTimeStamp) },
+          });
+        }
+
         await fetchHistoryPriceCache(historyTimeStamp);
         const users = loadUsers();
         for (let index = 0; index < users.length; index += 1) {
