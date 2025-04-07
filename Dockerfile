@@ -16,7 +16,6 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y openssl tzdata
 RUN ln -fs /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 COPY package*.json ./
-COPY pnpm-lock.yaml ./
 COPY packages/*/package.json ./packages/*/
 RUN npm install -g pnpm
 
