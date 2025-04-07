@@ -65,7 +65,6 @@ program
           });
         }
 
-        await fetchUsers();
         await fetchHistoryPriceCache(historyTimeStamp);
         const users = loadUsers();
         for (let index = 0; index < users.length; index += 1) {
@@ -164,6 +163,7 @@ program
         }
       };
 
+      await fetchUsers();
       if (range == "") {
         await loopOneDay(day);
       } else {
