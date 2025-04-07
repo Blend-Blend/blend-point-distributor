@@ -65,6 +65,7 @@ program
           });
         }
 
+        await fetchUsers();
         await fetchHistoryPriceCache(historyTimeStamp);
         const users = loadUsers();
         for (let index = 0; index < users.length; index += 1) {
@@ -184,6 +185,7 @@ program
   .action(async ({ skip }: { skip: boolean }) => {
     console.log("start send today point to users");
     await fetchUsers();
+    console.log("fetch users done");
     const historyTimeStamp = todayUTC8Zero();
     await fetchOraclePriceCache();
     const users = loadUsers();
