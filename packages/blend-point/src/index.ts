@@ -289,11 +289,33 @@ program
     }
 
     console.log("send today point to users done");
+
     console.log("start make summary");
     await makeSummary();
     console.log("make summary done");
 
-    console.log("all work done");
+    const totalYuzuPoint = await dbClient.userSummary.aggregate({
+      _sum: {
+        yuzu_point: true,
+      },
+    });
+    const yuzuTotalPoint = totalYuzuPoint._sum.yuzu_point;
+    console.log(`total yuzu point: ${yuzuTotalPoint}`);
+
+    if (Number(yuzuTotalPoint) > 26700000) {
+      console.log("yuzu has reached the target");
+      console.log("let's clean today yuzu point");
+      await dbClient.dailyPoint.deleteMany({
+        where: { send_date: formatDate(todayUTC8Zero()) },
+      });
+      console.log("clean today yuzu point done");
+      console.log("let's make summary");
+      await makeSummary();
+      console.log("make summary done");
+      console.log("all work done");
+    } else {
+      console.log("yuzu total point is less than 26700000");
+    }
   });
 
 program
