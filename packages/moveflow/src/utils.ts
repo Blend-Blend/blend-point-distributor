@@ -2,8 +2,8 @@ import fs from "fs";
 import path from "path";
 import pino from "pino";
 import axios from "axios";
-import { coinIDUSD, coingecko_token } from "./confit";
-
+import { coinIDUSD, coingecko_token } from "./config";
+import moment from "moment-timezone";
 interface PriceResponse {
   prices: number[][];
   market_caps: number[][];
@@ -95,4 +95,24 @@ export const fetchPrice = async (
 
 export const sleep = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const timeSeconds = (diff: number) => {
+  return Math.floor(Date.now() / 1000) + diff;
+};
+
+export const dayUTC8Zero = (year: number, month: number, day: number) => {
+  const now = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+  return Math.floor(now.getTime() / 1000) - 3600 * 8;
+};
+
+export const todayUTC8Zero = () => {
+  const now = new Date();
+  return dayUTC8Zero(now.getFullYear(), now.getMonth() + 1, now.getDate());
+};
+
+export const formatDate = (timestamp: number) => {
+  return moment(timestamp * 1000)
+    .tz("Asia/Shanghai")
+    .format("YYYY-MM-DD");
 };

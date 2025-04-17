@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import fs from "fs";
-import { coinIDs } from "./confit";
+import { coinIDs } from "./config";
 import { loadStreams } from "./graph";
 import { fetchPrice, getLogger, sleep } from "./utils";
 
