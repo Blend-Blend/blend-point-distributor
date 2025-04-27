@@ -10,7 +10,7 @@ const cache = new NodeCache({
 
 export const getCache = <T>(key: string): T | undefined => {
   const value = cache.get(key);
-  logger.info(`getCache: ${key} ${typeof value} ${value}`);
+  logger.debug(`getCache: ${key} ${typeof value} ${value}`);
   return value as T | undefined;
 };
 

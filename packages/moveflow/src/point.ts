@@ -75,7 +75,7 @@ export const fetchOraclePriceCache = async () => {
     const coinID = coinIDs[token as keyof typeof coinIDs];
     const price = await fetchOraclePrice(token);
     // logger.info(`price: ${price} ${token} ${coinID}`);
-    logger.info(`cache key : ${`price_oracle_${token}`} ${price}`);
+    logger.debug(`cache key : ${`price_oracle_${token}`} ${price}`);
     setCache(`price_oracle_${coinID}`, {
       timestamp: todayUTC8Zero(),
       price,
@@ -91,8 +91,8 @@ export const fetchHistoryPriceCache = async (historyTimeStamp: number) => {
       historyTimeStamp - 3600 * 5,
       historyTimeStamp
     );
-    logger.info(`historyPrice: ${JSON.stringify(historyPrice)}`);
-    logger.info(`cache key : ${`price_history_${token}`}`);
+    logger.debug(`historyPrice: ${JSON.stringify(historyPrice)}`);
+    logger.debug(`cache key : ${`price_history_${token}`}`);
     setCache(`price_history_${token}`, historyPrice);
   }
 };

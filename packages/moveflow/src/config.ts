@@ -35,4 +35,8 @@ export const graghURL =
 
 export const oracleAddress = "0x2186a6cEe4CBbde6a9E16E44C4d615f86A913DE7";
 
-export const point_per_day_usd = 100;
+// 每天释放 1$ 的积分, 积分给流的发送方
+export const point_per_day_usd = 1 / 30;
+
+// 最大积分 3360000
+export const max_yuzu_points = 3360000;

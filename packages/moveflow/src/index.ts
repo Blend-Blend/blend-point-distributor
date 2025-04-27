@@ -100,7 +100,9 @@ program
         } else {
           const tokenAddress = ethers.getAddress(token);
           logger.info(
-            `${coinIDs[tokenAddress as keyof typeof coinIDs]} price: ${price}`
+            `${
+              coinIDs[tokenAddress as keyof typeof coinIDs]
+            } price: ${JSON.stringify(price)}`
           );
         }
       }

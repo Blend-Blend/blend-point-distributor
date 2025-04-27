@@ -65,7 +65,7 @@ export const fetchCoingeckoPrice = async (
 
   // https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from=1741237901&to=1741238501
   const url = `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart/range?vs_currency=usd&from=${from}&to=${to}`;
-  logger.info(`visit : ${url}`);
+  logger.debug(`visit : ${url}`);
   const response = await axios.get(url, {
     headers: {
       "x-cg-demo-api-key": coingecko_token,

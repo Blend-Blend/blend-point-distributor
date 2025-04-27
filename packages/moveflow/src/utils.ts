@@ -14,8 +14,10 @@ export const getLogger = () => {
     fs.mkdirSync(logDir, { recursive: true });
   }
 
+  const level = process.env.LOG_LEVEL || "info";
+
   return pino({
-    level: "info",
+    level: level,
     transport: {
       targets: [
         // Console output with colors
@@ -24,7 +26,7 @@ export const getLogger = () => {
           options: {
             colorize: true,
           },
-          level: "info",
+          level: level,
         },
         // File output without colors
         {
@@ -33,7 +35,7 @@ export const getLogger = () => {
             destination: path.join(logDir, "log.txt"),
             colorize: false,
           },
-          level: "info",
+          level: level,
         },
       ],
     },
