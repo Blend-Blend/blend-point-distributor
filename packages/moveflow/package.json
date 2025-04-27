@@ -6,7 +6,8 @@
     "moveflow": "./dist/moveflow.js"
   },
   "scripts": {
-    "build": "tsc",
+    "generate": "pnpm prisma generate",
+    "build": "pnpm prisma generate && tsc",
     "start": "ts-node src/index.ts",
     "test": "ts-node src/test.ts",
     "test-all": "mocha --require ts-node/register test/*/*.test.ts"
@@ -19,12 +20,14 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.13.10",
     "mocha": "^11.1.0",
+    "prisma": "^6.6.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.2"
   },
   "dependencies": {
     "@apollo/client": "^3.10.8",
+    "@prisma/client": "^6.6.0",
     "axios": "^1.8.1",
     "bignumber.js": "^9.2.1",
     "commander": "^13.1.0",

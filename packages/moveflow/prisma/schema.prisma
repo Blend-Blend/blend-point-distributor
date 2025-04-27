@@ -1,0 +1,33 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model MoveFlowDailyPoint {
+  id          Int     @id @default(autoincrement())
+  user_id     String
+  stream_id    Float
+  stream_usd   Float  
+  yuzu_lend    Float
+  yuzu_borrow Float
+  blend_point Float 
+  yuzu_point  Float 
+  send_date   String
+  last_time   DateTime @default(now())
+  @@unique([user_id, send_date]) 
+  @@index([user_id])
+  @@index([last_time])
+}
+

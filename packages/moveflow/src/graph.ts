@@ -1,12 +1,14 @@
 import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
 import { graghURL } from "./config";
-import { todayUTC8Zero } from "./utils";
+import { getLogger, todayUTC8Zero } from "./utils";
 import { getStreamStatus } from "./streamStatus";
 import BigNumber from "bignumber.js";
 const client = new ApolloClient({
   uri: graghURL,
   cache: new InMemoryCache(),
 });
+
+const logger = getLogger();
 
 interface Token {
   name: string;
@@ -187,12 +189,7 @@ export const loadSendingStreams = async (
         },
       });
 
-      const streamedAmount = processStreamAmount(
-        currentTime,
-        item,
-        streamStatus,
-        "Incoming"
-      );
+      const streamedAmount = 0;
       const hash = item.operationLog
         .find((item) => item.type === "create")
         ?.id.split("-")[0];
@@ -290,7 +287,7 @@ export const loadStreams = async () => {
   return data.streamLists;
 };
 
-const processStreamAmount = (
+export const processStreamAmountByTime = (
   currentTime: string,
   item: StreamData,
   streamStatus: string,
@@ -341,7 +338,7 @@ const processStreamAmount = (
   });
 };
 
-export const getCurTimeStreamedByTime = (currentTime: string, stream: any) => {
+const getCurTimeStreamedByTime = (currentTime: string, stream: any) => {
   const lastTime =
     Number(
       calculateLastUnlockDate(
@@ -357,11 +354,17 @@ export const getCurTimeStreamedByTime = (currentTime: string, stream: any) => {
   let cliff_amount = stream.cliff_amount;
 
   if (startTime && curTime < startTime) {
+    logger.info(
+      `stream not started yet , will begin in ${startTime} - ${curTime} = ${
+        Number(startTime) - Number(curTime)
+      } seconds `
+    );
     return "0";
   }
 
   if (stream.status === "Paused" || stream.status === "Canceled") {
-    return stream.withdrawnAmount;
+    logger.info(`stream ${stream.id} is ${stream.status}`);
+    return "0";
   }
 
   if (stream.last_withdraw_time) {
@@ -373,6 +376,7 @@ export const getCurTimeStreamedByTime = (currentTime: string, stream: any) => {
   }
 
   if (endTime && curTime > endTime) {
+    logger.info(`stream ended`);
     return stream.depositAmount;
   }
 
@@ -394,6 +398,7 @@ export const getCurTimeStreamedByTime = (currentTime: string, stream: any) => {
   }
   const periods = timeElapsed.dividedBy(intervalBN);
   const earned = periods.times(ratePerIntervalBN);
+  logger.info(`earned: ${earned.toString()}`);
   return cliffAmountBN.plus(earned).toString();
 };
 

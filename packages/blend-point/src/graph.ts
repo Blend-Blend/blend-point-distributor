@@ -209,6 +209,7 @@ export async function fetchUsers() {
       lastTimestamp = userReserves[userReserves.length - 1].lastUpdateTimestamp;
       let formattedLastTimestamp = new Date(lastTimestamp * 1000).toISOString();
       logger.info(`lastTimestamp: ${formattedLastTimestamp}`);
+      console.log(`lastTimestamp: ${formattedLastTimestamp}`);
 
       await sleep(2000);
     }

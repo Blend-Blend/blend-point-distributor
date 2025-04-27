@@ -2,8 +2,13 @@ import fs from "fs";
 import path from "path";
 import pino from "pino";
 import moment from "moment-timezone";
+let logger: pino.Logger | null = null;
 
 export const getLogger = () => {
+  if (logger) {
+    return logger;
+  }
+
   const date = new Date();
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -16,7 +21,7 @@ export const getLogger = () => {
 
   const level = process.env.LOG_LEVEL || "info";
 
-  return pino({
+  logger = pino({
     level: level,
     transport: {
       targets: [
@@ -40,6 +45,8 @@ export const getLogger = () => {
       ],
     },
   });
+
+  return logger;
 };
 
 export const sleep = (ms: number) => {

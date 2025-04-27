@@ -3,7 +3,7 @@ import fs from "fs";
 import { coinIDs } from "./config";
 import { loadStreams } from "./graph";
 import { getLogger, sleep } from "./utils";
-import { fetchPrice } from "./tokenHelper";
+import { fetchCoingeckoPrice } from "./tokenHelper";
 
 const logger = getLogger();
 
@@ -30,7 +30,11 @@ const main = async () => {
     logger.info(`coinID: ${coinID} `);
 
     // logger.info(`${token.id} ${token.name} ${token.symbol} ${startTime}`);
-    const thatPrice = await fetchPrice(coinID, startTime - 3000, startTime);
+    const thatPrice = await fetchCoingeckoPrice(
+      coinID,
+      startTime - 3000,
+      startTime
+    );
     console.log(thatPrice);
     // logger.info(`${token.id} ${token.name} ${token.symbol} ${currentPrice}`);
 
