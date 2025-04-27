@@ -1,4 +1,7 @@
 import NodeCache from "node-cache";
+import { getLogger } from "./utils";
+
+const logger = getLogger();
 
 const cache = new NodeCache({
   stdTTL: 60 * 60,
@@ -6,7 +9,9 @@ const cache = new NodeCache({
 });
 
 export const getCache = <T>(key: string): T | undefined => {
-  return cache.get(key) as T | undefined;
+  const value = cache.get(key);
+  logger.info(`getCache: ${key} ${typeof value} ${value}`);
+  return value as T | undefined;
 };
 
 export const setCache = (key: string, value: any, ttl = 60 * 60 * 24) => {

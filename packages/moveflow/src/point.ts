@@ -5,9 +5,10 @@ import {
   USDT_ADDRESS,
   WBTC_ADDRESS,
   coinIDs,
+  BLEND_TOKEN_ADDRESS,
 } from "./config";
-import { fetchOraclePrice } from "./tokenHelper";
-import { getLogger, fetchPrice } from "./utils";
+import { fetchCoingeckoPrice, fetchOraclePrice } from "./tokenHelper";
+import { getLogger, dayUTC8Zero, todayUTC8Zero } from "./utils";
 import { setCache } from "./cache";
 export interface UserReserveUSD {
   id: string;
@@ -66,26 +67,32 @@ export const tokens = [
   USDC_ADDRESS,
   WETH_ADDRESS,
   WEDU_ADDRESS,
+  BLEND_TOKEN_ADDRESS,
 ];
 
 export const fetchOraclePriceCache = async () => {
   for (let token of tokens) {
     const coinID = coinIDs[token as keyof typeof coinIDs];
     const price = await fetchOraclePrice(token);
-    logger.info(`price: ${price} ${token} ${coinID}`);
-    setCache(`price_oracle_${token}`, price);
+    // logger.info(`price: ${price} ${token} ${coinID}`);
+    logger.info(`cache key : ${`price_oracle_${token}`} ${price}`);
+    setCache(`price_oracle_${coinID}`, {
+      timestamp: todayUTC8Zero(),
+      price,
+    });
   }
 };
 
 export const fetchHistoryPriceCache = async (historyTimeStamp: number) => {
   for (let token of tokens) {
     const coinId = coinIDs[token as keyof typeof coinIDs];
-    const historyPrice = await fetchPrice(
+    const historyPrice = await fetchCoingeckoPrice(
       coinId,
       historyTimeStamp - 3600 * 5,
       historyTimeStamp
     );
     logger.info(`historyPrice: ${JSON.stringify(historyPrice)}`);
+    logger.info(`cache key : ${`price_history_${token}`}`);
     setCache(`price_history_${token}`, historyPrice);
   }
 };

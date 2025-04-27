@@ -2,7 +2,8 @@ import { ethers } from "ethers";
 import fs from "fs";
 import { coinIDs } from "./config";
 import { loadStreams } from "./graph";
-import { fetchPrice, getLogger, sleep } from "./utils";
+import { getLogger, sleep } from "./utils";
+import { fetchPrice } from "./tokenHelper";
 
 const logger = getLogger();
 
@@ -33,12 +34,12 @@ const main = async () => {
     console.log(thatPrice);
     // logger.info(`${token.id} ${token.name} ${token.symbol} ${currentPrice}`);
 
-    const streamUSD = thatPrice.price * Number(stream.deposit);
+    const streamUSD = thatPrice.price * Number(stream.depositAmount);
     logger.info(`${streamUSD} ${streamUSD}`);
 
     const streamSeconds = (Number(stream.stopTime) - startTime) / 1000;
 
-    const csvItem = `${stream.id},${stream.sender.id},${streamUSD},${streamSeconds}`;
+    const csvItem = `${stream.id},${stream.sender},${streamUSD},${streamSeconds}`;
     fs.appendFileSync(csvFile, csvItem + "\n");
     console.log(csvItem);
 
