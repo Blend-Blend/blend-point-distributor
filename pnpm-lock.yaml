@@ -14,6 +14,9 @@ importers:
       '@credit-system/credit-system':
         specifier: workspace:*
         version: link:packages/credit-system
+      '@credit-system/moveflow':
+        specifier: workspace:*
+        version: link:packages/moveflow
 
   packages/blend-point:
     dependencies:
@@ -193,6 +196,9 @@ importers:
       '@apollo/client':
         specifier: ^3.10.8
         version: 3.13.4(@types/react@18.3.18)(graphql-ws@6.0.4(graphql@16.10.0)(ws@8.18.1))(graphql@16.10.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@credit-system/blend-point':
+        specifier: workspace:*
+        version: link:../blend-point
       '@prisma/client':
         specifier: ^6.6.0
         version: 6.6.0(prisma@6.6.0(typescript@5.8.2))(typescript@5.8.2)
