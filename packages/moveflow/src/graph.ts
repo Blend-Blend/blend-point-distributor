@@ -398,7 +398,7 @@ const getCurTimeStreamedByTime = (currentTime: string, stream: any) => {
   }
   const periods = timeElapsed.dividedBy(intervalBN);
   const earned = periods.times(ratePerIntervalBN);
-  logger.info(`earned: ${earned.toString()}`);
+  logger.debug(`earned: ${earned.toString()}`);
   return cliffAmountBN.plus(earned).toString();
 };
 

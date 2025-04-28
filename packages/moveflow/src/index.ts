@@ -8,10 +8,14 @@ import { getCache } from "./cache";
 import { ethers } from "ethers";
 import { HistoryPrice } from "./tokenHelper";
 import { coinIDs, point_per_day_usd } from "./config";
+import { dbClient } from "@credit-system/blend-point";
 const program = new Command();
 const logger = getLogger();
 
-program.command("send-history").action(async () => {});
+program.command("send-history").action(async () => {
+  const result = await dbClient.dailyPoint.findMany();
+  console.log(result);
+});
 
 program
   .command("send-today")
@@ -152,6 +156,32 @@ program
 
 program.action(async () => {
   logger.info("You can running send-today or send-history");
+});
+
+program.command("dump").action(async () => {
+  const streams = await loadSendingStreams(todayUTC8Zero().toString());
+  const lines: any[] = [];
+  for (let stream of streams) {
+    const streamdAmount = processStreamAmountByTime(
+      todayUTC8Zero().toString(),
+      stream.streamData,
+      stream.status,
+      "Incoming"
+    );
+
+    lines.push({
+      id: stream.id,
+      sender: stream.sender,
+      streamdAmount: streamdAmount,
+      depositAmount: stream.depositAmount,
+      token: stream.token.name,
+      status: stream.status,
+    });
+  }
+
+  setTimeout(() => {
+    console.table(lines);
+  }, 300);
 });
 
 program.parse(process.argv);

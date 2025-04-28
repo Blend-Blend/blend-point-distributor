@@ -1,13 +1,12 @@
 {
-  "name": "moveflow",
+  "name": "@credit-system/moveflow",
   "version": "1.0.0",
   "main": "index.js",
   "bin": {
-    "moveflow": "./dist/moveflow.js"
+    "moveflow": "./dist/index.js"
   },
   "scripts": {
-    "generate": "pnpm prisma generate",
-    "build": "pnpm prisma generate && tsc",
+    "build": "tsc",
     "start": "ts-node src/index.ts",
     "test": "ts-node src/test.ts",
     "test-all": "mocha --require ts-node/register test/*/*.test.ts"
@@ -37,6 +36,7 @@
     "moment-timezone": "^0.5.47",
     "node-cache": "^5.1.2",
     "pino": "^9.6.0",
-    "pino-pretty": "^13.0.0"
+    "pino-pretty": "^13.0.0",
+    "@credit-system/blend-point": "workspace:*"
   }
 }
