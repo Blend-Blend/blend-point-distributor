@@ -5,12 +5,10 @@
   },
   "dependencies": {
     "@credit-system/blend-point": "workspace:*",
-    "@credit-system/moveflow": "workspace:*",
     "@credit-system/credit-system": "workspace:*"
   },
   "devDependencies": {
     "@credit-system/blend-point": "workspace:*",
-    "@credit-system/moveflow": "workspace:*",
     "@credit-system/credit-system": "workspace:*"
   }
 }

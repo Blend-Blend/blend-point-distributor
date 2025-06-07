@@ -23,11 +23,9 @@ COPY --from=builder /app/node_modules ./node_modules
 
 COPY --from=builder /app/packages/blend-point/node_modules ./packages/blend-point/node_modules
 COPY --from=builder /app/packages/credit-system/node_modules ./packages/credit-system/node_modules
-COPY --from=builder /app/packages/moveflow/node_modules ./packages/moveflow/node_modules
 
 COPY --from=builder /app/packages/blend-point/dist ./packages/blend-point/dist
 COPY --from=builder /app/packages/credit-system/dist ./packages/credit-system/dist
-COPY --from=builder /app/packages/moveflow/dist ./packages/moveflow/dist
 
 ENV PORT=8080
 ENV NODE_ENV=production
