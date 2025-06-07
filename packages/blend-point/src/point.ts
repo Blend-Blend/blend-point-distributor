@@ -32,10 +32,11 @@ export const calculatePoint = (userReserveUSD: UserReserveUSD): PointResult => {
 
   // blend point
   const stakePoint =
-    Math.round((userReserveUSD.stakeAmount / 90) * pointsCount) / pointsCount;
+    Math.round(((userReserveUSD.stakeAmount * 10) / 90) * pointsCount) /
+    pointsCount;
 
   const debtPoint =
-    Math.round(((userReserveUSD.debtAmount * 1.5) / 90) * pointsCount) /
+    Math.round(((userReserveUSD.debtAmount * 15) / 90) * pointsCount) /
     pointsCount;
 
   const totalPoint = stakePoint + debtPoint;

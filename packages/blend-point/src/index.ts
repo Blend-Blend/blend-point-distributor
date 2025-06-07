@@ -179,6 +179,25 @@ program
   );
 
 program
+  .command("send-to-address")
+  .option("-a, --address <address>", "address")
+  .description("send point to address")
+  .action(async ({ address }: { address: string }) => {
+    await fetchOraclePriceCache();
+    console.log("user address : ", address);
+    const now = todayUTC8Zero();
+    for (let token of tokens) {
+      const coinID = coinIDs[token as keyof typeof coinIDs];
+      const price = getCache<number>(`price_oracle_${token}`) as number;
+      console.log(`${token} price: ${price}`);
+
+      console.log(`address: ${address} token: ${token} now: ${now}`);
+      const userReserves = await getUserReserve(address, token, now);
+      console.log(`${token} userReserves: ${userReserves}`);
+    }
+  });
+
+program
   .command("send-today")
   .option("-k, --skip", "skip existing users", false)
   .description("send today point to users")
@@ -194,9 +213,11 @@ program
     for (let i = 0; i < users.length; i += 1) {
       const user = users[i];
 
-      if (i % 50 == 0) {
-        console.log(`deal with user: ${user} ${i + 1}/${users.length}`);
+      if (user.toLowerCase() == "0x3544d13c3f110efff1bb2f309f44fddb899a60ed") {
+        continue;
       }
+
+      console.log(`deal with user: ${user} ${i + 1}/${users.length}`);
 
       if (skip) {
         const point = await dbClient.dailyPoint.findFirst({
