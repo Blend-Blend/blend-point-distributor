@@ -323,7 +323,7 @@ program
     const yuzuTotalPoint = totalYuzuPoint._sum.yuzu_point;
     console.log(`total yuzu point: ${yuzuTotalPoint}`);
 
-    if (Number(yuzuTotalPoint) > 26700000) {
+    if (Number(yuzuTotalPoint) > 12_142_372) {
       console.log("yuzu has reached the target");
       console.log("let's clean today yuzu point");
       await dbClient.dailyPoint.deleteMany({
@@ -335,7 +335,7 @@ program
       console.log("make summary done");
       console.log("all work done");
     } else {
-      console.log("yuzu total point is less than 26700000");
+      console.log("yuzu total point is less than 12_142_372");
     }
   });
 
